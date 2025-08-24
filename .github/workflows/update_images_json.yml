@@ -29,10 +29,14 @@ jobs:
       - name: Run image list generator
         run: python gen_images_json.py
 
-      - name: Commit updated images.json
+      - name: Commit updated images.json  
+        env:
+            GH_PAT: ${{ secrets.GH_PAT }}
+
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add images.json
           git commit -m "Auto-update images.json via GitHub Actions" || echo "No changes to commit"
           git push
+          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
