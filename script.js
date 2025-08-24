@@ -28,19 +28,33 @@ fetch('images.json')
         img.src = 'images/' + shuffled[index];
         container.innerHTML = '';
         container.appendChild(img);
-        index = (index + 1) % shuffled.length;
       }
 
       showImage();
 
-      // Change image every 3 seconds
-      const intervalId = setInterval(showImage, 900000);
+      // Change image every 3 seconds (900000 ms is 15 minutes, changed to 3000 ms for 3 seconds)
+      const intervalId = setInterval(() => {
+        index = (index + 1) % shuffled.length;
+        showImage();
+      }, 3000);
 
-      // Optional: stop screensaver on click (remove interval)
+      // Arrow key navigation
+      function handleKeydown(e) {
+        if (e.key === 'ArrowRight') {
+          index = (index + 1) % shuffled.length;
+          showImage();
+        } else if (e.key === 'ArrowLeft') {
+          index = (index - 1 + shuffled.length) % shuffled.length;
+          showImage();
+        }
+      }
+      window.addEventListener('keydown', handleKeydown);
+
+      // Stop screensaver on click
       container.addEventListener('click', () => {
         clearInterval(intervalId);
-        // Optionally, reload the page or restore the gallery here
-        window.location.reload(); // This will reload the page and restore the gallery
+        window.removeEventListener('keydown', handleKeydown);
+        window.location.reload();
       });
     });
   });
