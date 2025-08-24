@@ -18,6 +18,16 @@ fetch('images.json')
     document.getElementById('startScreensaver').addEventListener('click', () => {
       document.body.innerHTML = '<div id="screensaver"></div>';
       const container = document.getElementById('screensaver');
+
+      // Request fullscreen
+      if (container.requestFullscreen) {
+        container.requestFullscreen();
+      } else if (container.webkitRequestFullscreen) { // Safari
+        container.webkitRequestFullscreen();
+      } else if (container.msRequestFullscreen) { // IE11
+        container.msRequestFullscreen();
+      }
+
       let index = 0;
 
       // Shuffle images for random order
