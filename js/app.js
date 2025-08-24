@@ -176,6 +176,7 @@ const QuickView = {
   `
 };
 
+// Make sure to load Gallery.js, Screensaver.js, and QuickView.js before this file in your HTML!
 Vue.createApp({
   components: { Gallery, Screensaver, QuickView },
   data() {
