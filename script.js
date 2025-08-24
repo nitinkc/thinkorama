@@ -34,10 +34,13 @@ const Gallery = {
   },
   methods: {
     initLightGallery() {
-      if (window.lgDestroy) window.lgDestroy();
+      // Store the gallery instance on the component
+      if (this._lgInstance && this._lgInstance.destroy) {
+        this._lgInstance.destroy();
+      }
       const galleryEl = this.$el.querySelector('#gallery');
       if (galleryEl && window.lightGallery) {
-        window.lgDestroy = window.lightGallery(galleryEl, {
+        this._lgInstance = window.lightGallery(galleryEl, {
           selector: '.gallery-item',
           plugins: [lgZoom, lgThumbnail],
           licenseKey: '0000-0000-000-0000', // Free for personal/non-commercial
