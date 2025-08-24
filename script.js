@@ -4,22 +4,43 @@ fetch('images.json')
     const gallery = document.getElementById('gallery');
     const pageSize = 20; // Images per page
     let currentPage = 1;
-    const totalPages = Math.ceil(images.length / pageSize);
+    let modal, modalImg;
 
-    // Shuffle function
+    // Shuffle ONCE
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
       }
     }
+    const shuffledImages = images.slice();
+    shuffleArray(shuffledImages);
+
+    const totalPages = Math.ceil(shuffledImages.length / pageSize);
+
+    // Add this function to set up the modal if not already present
+    function setupModal() {
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'imageModal';
+        modal.style.cssText = `
+          display:none;position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;
+          background:rgba(0,0,0,0.85);align-items:center;justify-content:center;
+        `;
+        modal.innerHTML = `
+          <span style="position:absolute;top:20px;right:40px;font-size:2rem;color:#fff;cursor:pointer;" id="closeModal">&times;</span>
+          <img id="modalImg" style="max-width:90vw;max-height:90vh;display:block;margin:auto;border-radius:8px;">
+        `;
+        document.body.appendChild(modal);
+        modalImg = document.getElementById('modalImg');
+        document.getElementById('closeModal').onclick = () => { modal.style.display = 'none'; };
+        modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+      }
+    }
 
     function renderGallery(page) {
       gallery.innerHTML = '';
-      // Make a copy and shuffle for each page render
-      const shuffledImages = images.slice();
-      shuffleArray(shuffledImages);
-
+      setupModal();
       const start = (page - 1) * pageSize;
       const end = Math.min(start + pageSize, shuffledImages.length);
       for (let i = start; i < end; i++) {
@@ -29,10 +50,16 @@ fetch('images.json')
         col.className = 'col-12 col-sm-6 col-md-3 mb-4';
         col.innerHTML = `
           <div class="card">
-            <a href="${fullPath}" target="_blank">
+            <a href="#" class="img-link">
               <img src="${fullPath}" class="card-img-top" alt="${path}">
             </a>
           </div>`;
+        // Modal open logic
+        col.querySelector('.img-link').onclick = (e) => {
+          e.preventDefault();
+          modalImg.src = fullPath;
+          modal.style.display = 'flex';
+        };
         gallery.appendChild(col);
       }
     }
