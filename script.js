@@ -17,13 +17,7 @@ const Gallery = {
       return this.images.slice(start, end);
     },
     pageNumbers() {
-      let start = Math.max(1, this.page - 2);
-      let end = Math.min(this.totalPages, this.page + 2);
-      if (this.page <= 3) end = Math.min(5, this.totalPages);
-      if (this.page >= this.totalPages - 2) start = Math.max(1, this.totalPages - 4);
-      const nums = [];
-      for (let i = start; i <= end; i++) nums.push(i);
-      return nums;
+      return Array.from({ length: this.totalPages }, (_, i) => i + 1);
     }
   },
   mounted() {
