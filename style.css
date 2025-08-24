@@ -138,3 +138,8 @@ body {
     font-size: 15px;
   }
 }
+
+/* Make lightGallery modal background semi-transparent */
+.lg-backdrop {
+  background-color: rgba(0, 0, 0, 0.7) !important; /* 0.7 = 70% opacity, adjust as needed */
+}
