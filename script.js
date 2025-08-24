@@ -34,9 +34,10 @@ const Gallery = {
   },
   methods: {
     initLightGallery() {
-      // Store the gallery instance on the component
-      if (this._lgInstance && this._lgInstance.destroy) {
+      // Properly destroy previous instance if it exists
+      if (this._lgInstance && typeof this._lgInstance.destroy === 'function') {
         this._lgInstance.destroy();
+        this._lgInstance = null;
       }
       const galleryEl = this.$el.querySelector('#gallery');
       if (galleryEl && window.lightGallery) {
