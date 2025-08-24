@@ -1,3 +1,4 @@
+
 const IMAGE_FOLDER = 'images/';
 const DISPLAY_TIME = 5000; // 5 seconds per image
 const TOTAL_DURATION = 15 * 60 * 1000; // 15 minutes
@@ -15,7 +16,8 @@ function startSlideshow(images) {
 
   function showNext() {
     if (Date.now() - startTime > TOTAL_DURATION) return;
-    container.innerHTML = `<img src="${IMAGE_FOLDER}${shuffled[index]}" style="width:100vw;height:100vh;object-fit:cover;">`;
+    const imagePath = IMAGE_FOLDER + shuffled[index];
+    container.innerHTML = `<img src="${imagePath}" style="width:100vw;height:100vh;object-fit:cover;">`;
     index = (index + 1) % shuffled.length;
     setTimeout(showNext, DISPLAY_TIME);
   }
