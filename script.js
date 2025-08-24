@@ -4,9 +4,7 @@ const Gallery = {
   props: ['images'],
   data() {
     return {
-      page: 1,
-      showModal: false,
-      modalImage: null
+      page: 1
     };
   },
   computed: {
@@ -14,7 +12,6 @@ const Gallery = {
       return Math.ceil(this.images.length / PAGE_SIZE);
     },
     shuffledImages() {
-      // Shuffle on each page render
       const arr = this.images.slice();
       for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -37,28 +34,40 @@ const Gallery = {
       return nums;
     }
   },
+  mounted() {
+    this.initLightGallery();
+  },
+  updated() {
+    this.initLightGallery();
+  },
   methods: {
-    openModal(path) {
-      this.modalImage = path;
-      this.showModal = true;
-      document.body.style.overflow = 'hidden';
-    },
-    closeModal() {
-      this.showModal = false;
-      this.modalImage = null;
-      document.body.style.overflow = '';
+    initLightGallery() {
+      if (window.lgDestroy) window.lgDestroy();
+      const galleryEl = this.$el.querySelector('#gallery');
+      if (galleryEl && window.lightGallery) {
+        window.lgDestroy = window.lightGallery(galleryEl, {
+          selector: '.gallery-item',
+          plugins: [lgZoom, lgThumbnail],
+          licenseKey: '0000-0000-000-0000', // Free for personal/non-commercial
+          speed: 400
+        });
+      }
     }
   },
   template: `
     <div>
       <div class="row" id="gallery">
-        <div v-for="(path, idx) in pageImages" :key="idx" class="col-12 col-sm-6 col-md-3 mb-4">
+        <a
+          v-for="(path, idx) in pageImages"
+          :key="idx"
+          :href="'images/' + path"
+          class="col-12 col-sm-6 col-md-3 mb-4 gallery-item"
+          :data-lg-size="'1406-1390'"
+        >
           <div class="card">
-            <a href="#" @click.prevent="openModal(path)">
-              <img :src="'images/' + path" class="card-img-top" :alt="path">
-            </a>
+            <img :src="'images/' + path" class="card-img-top" :alt="path">
           </div>
-        </div>
+        </a>
       </div>
       <nav id="pagination" aria-label="Gallery page navigation">
         <ul class="pagination justify-content-center">
@@ -73,15 +82,6 @@ const Gallery = {
           </li>
         </ul>
       </nav>
-      <!-- Modal -->
-      <div v-if="showModal" class="modal fade show" tabindex="-1" style="display:block; background:rgba(0,0,0,0.7);" @click.self="closeModal">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-          <div class="modal-content bg-transparent border-0">
-            <button type="button" class="btn-close btn-close-white ms-auto me-2 mt-2" aria-label="Close" @click="closeModal"></button>
-            <img :src="'images/' + modalImage" class="img-fluid rounded" style="display:block; margin:auto; max-height:80vh;">
-          </div>
-        </div>
-      </div>
     </div>
   `
 };
