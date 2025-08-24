@@ -2,18 +2,102 @@ fetch('images.json')
   .then(response => response.json())
   .then(images => {
     const gallery = document.getElementById('gallery');
-    images.forEach(path => {
-      const fullPath = 'images/' + path;
-      const col = document.createElement('div');
-      col.className = 'col-12 col-sm-6 col-md-3 mb-4'; // 1 per row on xs, 2 on sm, 4 on md+
-      col.innerHTML = `
-        <div class="card">
-          <a href="${fullPath}" target="_blank">
-            <img src="${fullPath}" class="card-img-top" alt="${path}">
-          </a>
-        </div>`;
-      gallery.appendChild(col);
-    });
+    const pageSize = 20; // Images per page
+    let currentPage = 1;
+    const totalPages = Math.ceil(images.length / pageSize);
+
+    function renderGallery(page) {
+      gallery.innerHTML = '';
+      const start = (page - 1) * pageSize;
+      const end = Math.min(start + pageSize, images.length);
+      for (let i = start; i < end; i++) {
+        const path = images[i];
+        const fullPath = 'images/' + path;
+        const col = document.createElement('div');
+        col.className = 'col-12 col-sm-6 col-md-3 mb-4';
+        col.innerHTML = `
+          <div class="card">
+            <a href="${fullPath}" target="_blank">
+              <img src="${fullPath}" class="card-img-top" alt="${path}">
+            </a>
+          </div>`;
+        gallery.appendChild(col);
+      }
+    }
+
+    function renderPagination() {
+      let pagination = document.getElementById('pagination');
+      if (!pagination) {
+        pagination = document.createElement('nav');
+        pagination.id = 'pagination';
+        pagination.setAttribute('aria-label', 'Gallery page navigation');
+        gallery.parentNode.appendChild(pagination);
+      }
+      pagination.innerHTML = '';
+
+      const ul = document.createElement('ul');
+      ul.className = 'pagination justify-content-center';
+
+      // Previous button
+      const prevLi = document.createElement('li');
+      prevLi.className = `page-item${currentPage === 1 ? ' disabled' : ''}`;
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'page-link';
+      prevBtn.textContent = 'Previous';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.onclick = () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderGallery(currentPage);
+          renderPagination();
+        }
+      };
+      prevLi.appendChild(prevBtn);
+      ul.appendChild(prevLi);
+
+      // Page numbers (show up to 5 pages for brevity)
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, currentPage + 2);
+      if (currentPage <= 3) endPage = Math.min(5, totalPages);
+      if (currentPage >= totalPages - 2) startPage = Math.max(1, totalPages - 4);
+
+      for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item${i === currentPage ? ' active' : ''}`;
+        const btn = document.createElement('button');
+        btn.className = 'page-link';
+        btn.textContent = i;
+        btn.onclick = () => {
+          currentPage = i;
+          renderGallery(currentPage);
+          renderPagination();
+        };
+        li.appendChild(btn);
+        ul.appendChild(li);
+      }
+
+      // Next button
+      const nextLi = document.createElement('li');
+      nextLi.className = `page-item${currentPage === totalPages ? ' disabled' : ''}`;
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'page-link';
+      nextBtn.textContent = 'Next';
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.onclick = () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderGallery(currentPage);
+          renderPagination();
+        }
+      };
+      nextLi.appendChild(nextBtn);
+      ul.appendChild(nextLi);
+
+      pagination.appendChild(ul);
+    }
+
+    renderGallery(currentPage);
+    renderPagination();
 
     document.getElementById('startScreensaver').addEventListener('click', () => {
       document.body.innerHTML = '<div id="screensaver"></div>';
