@@ -1,26 +1,16 @@
-const IMAGE_FOLDER = 'images/';
-const DISPLAY_TIME = 5000;
-const TOTAL_DURATION = 15 * 60 * 1000;
-
-async function fetchImageList() {
-  const response = await fetch('images.json');
-  return await response.json();
-}
-
-function startSlideshow(images) {
-  const container = document.getElementById('slideshow');
-  let index = 0;
-  const shuffled = images.sort(() => Math.random() - 0.5);
-  const startTime = Date.now();
-
-  function showNext() {
-    if (Date.now() - startTime > TOTAL_DURATION) return;
-    container.innerHTML = `<img src="${IMAGE_FOLDER}${shuffled[index]}" style="width:100vw;height:100vh;object-fit:cover;">`;
-    index = (index + 1) % shuffled.length;
-    setTimeout(showNext, DISPLAY_TIME);
-  }
-
-  showNext();
-}
-
-fetchImageList().then(startSlideshow);
+fetch('images.json')
+    .then(response => response.json())
+    .then(images => {
+      const gallery = document.getElementById('gallery');
+      images.forEach(path => {
+        const fullPath = 'images/' + path;
+        const img = document.createElement('img');
+        img.src = fullPath;
+        img.alt = path;
+        const link = document.createElement('a');
+        link.href = fullPath;
+        link.target = '_blank';
+        link.appendChild(img);
+        gallery.appendChild(link);
+      });
+    });

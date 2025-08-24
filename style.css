@@ -1,8 +1,24 @@
-body {
-  margin: 0;
-  overflow: hidden;
-  background-color: black;
-}
-img {
-  transition: opacity 1s ease-in-out;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .gallery img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      transition: transform 0.2s;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+      border-color: #777;
+    }
