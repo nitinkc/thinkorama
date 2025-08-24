@@ -5,7 +5,7 @@ fetch('images.json')
     images.forEach(path => {
       const fullPath = 'images/' + path;
       const col = document.createElement('div');
-      col.className = 'col-md-3 mb-4';
+      col.className = 'col-12 col-sm-6 col-md-3 mb-4'; // 1 per row on xs, 2 on sm, 4 on md+
       col.innerHTML = `
         <div class="card">
           <a href="${fullPath}" target="_blank">
@@ -32,11 +32,11 @@ fetch('images.json')
 
       showImage();
 
-      // Change image every 3 seconds (900000 ms is 15 minutes, changed to 3000 ms for 3 seconds)
+      // Change image every 15 minutes
       const intervalId = setInterval(() => {
         index = (index + 1) % shuffled.length;
         showImage();
-      }, 3000);
+      }, 900000);
 
       // Arrow key navigation
       function handleKeydown(e) {

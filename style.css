@@ -29,6 +29,32 @@ body {
   display: block;
 }
 
+/* Gallery styles */
+#gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+#gallery > div {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 600px) {
+  #gallery > div {
+    flex: 1 1 48%;
+    max-width: 48%;
+  }
+}
+
+@media (min-width: 992px) {
+  #gallery > div {
+    flex: 1 1 23%;
+    max-width: 23%;
+  }
+}
+
 /* Small devices (phones, less than 600px) */
 @media (max-width: 599px) {
   .card-img-top {
