@@ -1,24 +1,12 @@
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
+      background-color: #f8f9fa;
     }
-    .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .gallery img {
-      width: 150px;
+    .card-img-top {
       height: 150px;
       object-fit: cover;
-      cursor: pointer;
-      border: 2px solid #ccc;
-      border-radius: 4px;
-      transition: transform 0.2s;
     }
-    .gallery img:hover {
-      transform: scale(1.05);
-      border-color: #777;
+    #screensaver img {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
     }
