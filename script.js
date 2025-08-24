@@ -1,166 +1,135 @@
-fetch('images.json')
-  .then(response => response.json())
-  .then(images => {
-    const gallery = document.getElementById('gallery');
-    const pageSize = 20; // Images per page
-    let currentPage = 1;
-    const totalPages = Math.ceil(images.length / pageSize);
+const PAGE_SIZE = 20;
 
-    // Shuffle function
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
+const Gallery = {
+  props: ['images'],
+  data() {
+    return {
+      page: 1
+    };
+  },
+  computed: {
+    totalPages() {
+      return Math.ceil(this.images.length / PAGE_SIZE);
+    },
+    shuffledImages() {
+      // Shuffle on each page render
+      const arr = this.images.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
+      return arr;
+    },
+    pageImages() {
+      const start = (this.page - 1) * PAGE_SIZE;
+      const end = Math.min(start + PAGE_SIZE, this.shuffledImages.length);
+      return this.shuffledImages.slice(start, end);
+    },
+    pageNumbers() {
+      let start = Math.max(1, this.page - 2);
+      let end = Math.min(this.totalPages, this.page + 2);
+      if (this.page <= 3) end = Math.min(5, this.totalPages);
+      if (this.page >= this.totalPages - 2) start = Math.max(1, this.totalPages - 4);
+      const nums = [];
+      for (let i = start; i <= end; i++) nums.push(i);
+      return nums;
     }
-
-    function renderGallery(page) {
-      gallery.innerHTML = '';
-      // Make a copy and shuffle for each page render
-      const shuffledImages = images.slice();
-      shuffleArray(shuffledImages);
-
-      const start = (page - 1) * pageSize;
-      const end = Math.min(start + pageSize, shuffledImages.length);
-      for (let i = start; i < end; i++) {
-        const path = shuffledImages[i];
-        const fullPath = 'images/' + path;
-        const col = document.createElement('div');
-        col.className = 'col-12 col-sm-6 col-md-3 mb-4';
-        col.innerHTML = `
+  },
+  template: `
+    <div>
+      <div class="row" id="gallery">
+        <div v-for="(path, idx) in pageImages" :key="idx" class="col-12 col-sm-6 col-md-3 mb-4">
           <div class="card">
-            <a href="${fullPath}" target="_blank">
-              <img src="${fullPath}" class="card-img-top" alt="${path}">
+            <a :href="'images/' + path" target="_blank">
+              <img :src="'images/' + path" class="card-img-top" :alt="path">
             </a>
-          </div>`;
-        gallery.appendChild(col);
-      }
-    }
+          </div>
+        </div>
+      </div>
+      <nav id="pagination" aria-label="Gallery page navigation">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" :class="{disabled: page === 1}">
+            <button class="page-link" @click="page > 1 && (page--)" :disabled="page === 1">Previous</button>
+          </li>
+          <li v-for="num in pageNumbers" :key="num" class="page-item" :class="{active: num === page}">
+            <button class="page-link" @click="page = num">{{ num }}</button>
+          </li>
+          <li class="page-item" :class="{disabled: page === totalPages}">
+            <button class="page-link" @click="page < totalPages && (page++)" :disabled="page === totalPages">Next</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  `
+};
 
-    function renderPagination() {
-      let pagination = document.getElementById('pagination');
-      if (!pagination) {
-        pagination = document.createElement('nav');
-        pagination.id = 'pagination';
-        pagination.setAttribute('aria-label', 'Gallery page navigation');
-        gallery.parentNode.appendChild(pagination);
-      }
-      pagination.innerHTML = '';
-
-      const ul = document.createElement('ul');
-      ul.className = 'pagination justify-content-center';
-
-      // Previous button
-      const prevLi = document.createElement('li');
-      prevLi.className = `page-item${currentPage === 1 ? ' disabled' : ''}`;
-      const prevBtn = document.createElement('button');
-      prevBtn.className = 'page-link';
-      prevBtn.textContent = 'Previous';
-      prevBtn.disabled = currentPage === 1;
-      prevBtn.onclick = () => {
-        if (currentPage > 1) {
-          currentPage--;
-          renderGallery(currentPage);
-          renderPagination();
-        }
-      };
-      prevLi.appendChild(prevBtn);
-      ul.appendChild(prevLi);
-
-      // Page numbers (show up to 5 pages for brevity)
-      let startPage = Math.max(1, currentPage - 2);
-      let endPage = Math.min(totalPages, currentPage + 2);
-      if (currentPage <= 3) endPage = Math.min(5, totalPages);
-      if (currentPage >= totalPages - 2) startPage = Math.max(1, totalPages - 4);
-
-      for (let i = startPage; i <= endPage; i++) {
-        const li = document.createElement('li');
-        li.className = `page-item${i === currentPage ? ' active' : ''}`;
-        const btn = document.createElement('button');
-        btn.className = 'page-link';
-        btn.textContent = i;
-        btn.onclick = () => {
-          currentPage = i;
-          renderGallery(currentPage);
-          renderPagination();
-        };
-        li.appendChild(btn);
-        ul.appendChild(li);
-      }
-
-      // Next button
-      const nextLi = document.createElement('li');
-      nextLi.className = `page-item${currentPage === totalPages ? ' disabled' : ''}`;
-      const nextBtn = document.createElement('button');
-      nextBtn.className = 'page-link';
-      nextBtn.textContent = 'Next';
-      nextBtn.disabled = currentPage === totalPages;
-      nextBtn.onclick = () => {
-        if (currentPage < totalPages) {
-          currentPage++;
-          renderGallery(currentPage);
-          renderPagination();
-        }
-      };
-      nextLi.appendChild(nextBtn);
-      ul.appendChild(nextLi);
-
-      pagination.appendChild(ul);
-    }
-
-    renderGallery(currentPage);
-    renderPagination();
-
-    document.getElementById('startScreensaver').addEventListener('click', () => {
-      document.body.innerHTML = '<div id="screensaver"></div>';
-      const container = document.getElementById('screensaver');
-
-      // Request fullscreen
-      if (container.requestFullscreen) {
-        container.requestFullscreen();
-      } else if (container.webkitRequestFullscreen) { // Safari
-        container.webkitRequestFullscreen();
-      } else if (container.msRequestFullscreen) { // IE11
-        container.msRequestFullscreen();
-      }
-
-      let index = 0;
-
-      // Shuffle images for random order
-      const shuffled = images.slice().sort(() => Math.random() - 0.5);
-
-      function showImage() {
-        const img = document.createElement('img');
-        img.src = 'images/' + shuffled[index];
-        container.innerHTML = '';
-        container.appendChild(img);
-      }
-
-      showImage();
-
-      // Change image every 15 minutes
-      const intervalId = setInterval(() => {
-        index = (index + 1) % shuffled.length;
-        showImage();
-      }, 900000);
-
-      // Arrow key navigation
-      function handleKeydown(e) {
-        if (e.key === 'ArrowRight') {
-          index = (index + 1) % shuffled.length;
-          showImage();
-        } else if (e.key === 'ArrowLeft') {
-          index = (index - 1 + shuffled.length) % shuffled.length;
-          showImage();
-        }
-      }
-      window.addEventListener('keydown', handleKeydown);
-
-      // Stop screensaver on click
-      container.addEventListener('click', () => {
-        clearInterval(intervalId);
-        window.removeEventListener('keydown', handleKeydown);
-        window.location.reload();
-      });
+const Screensaver = {
+  props: ['images'],
+  emits: ['exit'],
+  data() {
+    return {
+      index: 0,
+      shuffled: [],
+      intervalId: null
+    };
+  },
+  mounted() {
+    this.shuffled = this.images.slice().sort(() => Math.random() - 0.5);
+    this.index = 0;
+    // Fullscreen
+    this.$nextTick(() => {
+      const el = document.getElementById('screensaver');
+      if (el && el.requestFullscreen) el.requestFullscreen();
     });
-  });
+    // Change image every 15 minutes
+    this.intervalId = setInterval(() => {
+      this.index = (this.index + 1) % this.shuffled.length;
+    }, 900000);
+    // Arrow keys
+    window.addEventListener('keydown', this.handleKey);
+  },
+  beforeUnmount() {
+    clearInterval(this.intervalId);
+    window.removeEventListener('keydown', this.handleKey);
+    if (document.fullscreenElement) document.exitFullscreen();
+  },
+  methods: {
+    handleKey(e) {
+      if (e.key === 'ArrowRight') this.index = (this.index + 1) % this.shuffled.length;
+      if (e.key === 'ArrowLeft') this.index = (this.index - 1 + this.shuffled.length) % this.shuffled.length;
+      if (e.key === 'Escape') this.$emit('exit');
+    }
+  },
+  template: `
+    <div id="screensaver"
+      style="width:100vw;height:100vh;background:#000;display:flex;align-items:center;justify-content:center;position:fixed;top:0;left:0;z-index:9999"
+      @click="$emit('exit')"
+    >
+      <img
+        :src="'images/' + shuffled[index]"
+        style="max-width:100vw;max-height:100vh;object-fit:contain;display:block"
+        alt=""
+      />
+    </div>
+  `
+};
+
+Vue.createApp({
+  components: { Gallery, Screensaver },
+  data() {
+    return {
+      images: [],
+      screensaver: false
+    };
+  },
+  mounted() {
+    fetch('images.json')
+      .then(res => res.json())
+      .then(imgs => { this.images = imgs; });
+  },
+  methods: {
+    startScreensaver() {
+      this.screensaver = true;
+    }
+  }
+}).mount('#app');
