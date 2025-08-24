@@ -1,0 +1,8 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background-color: black;
+}
+img {
+  transition: opacity 1s ease-in-out;
+}
