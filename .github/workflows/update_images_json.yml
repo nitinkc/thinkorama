@@ -5,9 +5,9 @@ name: Update images
 
 on:
   push:
-    paths:
-      - 'images/**'
-      - 'gen_images_json.py'
+#    paths:
+#      - 'images/**'
+#      - 'gen_images_json.py'
 
 jobs:
   generate-json:
