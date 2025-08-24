@@ -1,5 +1,3 @@
-const PAGE_SIZE = 21;
-
 const Gallery = {
   props: {
     images: Array,
