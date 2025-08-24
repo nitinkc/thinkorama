@@ -4,7 +4,9 @@ const Gallery = {
   props: ['images'],
   data() {
     return {
-      page: 1
+      page: 1,
+      showModal: false,
+      modalImage: null
     };
   },
   computed: {
@@ -35,12 +37,24 @@ const Gallery = {
       return nums;
     }
   },
+  methods: {
+    openModal(path) {
+      this.modalImage = path;
+      this.showModal = true;
+      document.body.style.overflow = 'hidden';
+    },
+    closeModal() {
+      this.showModal = false;
+      this.modalImage = null;
+      document.body.style.overflow = '';
+    }
+  },
   template: `
     <div>
       <div class="row" id="gallery">
         <div v-for="(path, idx) in pageImages" :key="idx" class="col-12 col-sm-6 col-md-3 mb-4">
           <div class="card">
-            <a :href="'images/' + path" target="_blank">
+            <a href="#" @click.prevent="openModal(path)">
               <img :src="'images/' + path" class="card-img-top" :alt="path">
             </a>
           </div>
@@ -59,6 +73,15 @@ const Gallery = {
           </li>
         </ul>
       </nav>
+      <!-- Modal -->
+      <div v-if="showModal" class="modal fade show" tabindex="-1" style="display:block; background:rgba(0,0,0,0.7);" @click.self="closeModal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content bg-transparent border-0">
+            <button type="button" class="btn-close btn-close-white ms-auto me-2 mt-2" aria-label="Close" @click="closeModal"></button>
+            <img :src="'images/' + modalImage" class="img-fluid rounded" style="display:block; margin:auto; max-height:80vh;">
+          </div>
+        </div>
+      </div>
     </div>
   `
 };
