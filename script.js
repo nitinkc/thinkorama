@@ -19,7 +19,9 @@ fetch('images.json')
       document.body.innerHTML = '<div id="screensaver"></div>';
       const container = document.getElementById('screensaver');
       let index = 0;
-      const shuffled = images.sort(() => Math.random() - 0.5);
+
+      // Shuffle images for random order
+      const shuffled = images.slice().sort(() => Math.random() - 0.5);
 
       function showImage() {
         const img = document.createElement('img');
@@ -30,6 +32,15 @@ fetch('images.json')
       }
 
       showImage();
-      container.addEventListener('click', showImage);
+
+      // Change image every 3 seconds
+      const intervalId = setInterval(showImage, 900000);
+
+      // Optional: stop screensaver on click (remove interval)
+      container.addEventListener('click', () => {
+        clearInterval(intervalId);
+        // Optionally, reload the page or restore the gallery here
+        window.location.reload(); // This will reload the page and restore the gallery
+      });
     });
   });

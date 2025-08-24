@@ -1,12 +1,63 @@
-    body {
-      background-color: #f8f9fa;
-    }
-    .card-img-top {
-      height: 150px;
-      object-fit: cover;
-    }
-    #screensaver img {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-    }
+/* Base styles */
+body {
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+#screensaver {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000; /* Optional: black background for screensaver */
+}
+
+#screensaver img {
+  max-width: 100vw;
+  max-height: 100vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Small devices (phones, less than 600px) */
+@media (max-width: 599px) {
+  .card-img-top {
+    height: 100px;
+  }
+  #screensaver img {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
+/* Medium devices (tablets, 600px and up) */
+@media (min-width: 600px) and (max-width: 991px) {
+  .card-img-top {
+    height: 130px;
+  }
+  #screensaver img {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .card-img-top {
+    height: 150px;
+  }
+  #screensaver img {
+    width: 100vw;
+    height: 100vh;
+  }
+}
