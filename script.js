@@ -1,6 +1,6 @@
 const IMAGE_FOLDER = 'images/';
-const DISPLAY_TIME = 900000; // 5 seconds per image
-const TOTAL_DURATION = 15 * 60 * 1000; // 15 minutes
+const DISPLAY_TIME = 5000;
+const TOTAL_DURATION = 15 * 60 * 1000;
 
 async function fetchImageList() {
   const response = await fetch('images.json');
@@ -15,8 +15,7 @@ function startSlideshow(images) {
 
   function showNext() {
     if (Date.now() - startTime > TOTAL_DURATION) return;
-    const imagePath = IMAGE_FOLDER + shuffled[index];
-    container.innerHTML = `<img src="\${imagePath}" style="width:100vw;height:100vh;object-fit:cover;">`;
+    container.innerHTML = `<img src="${IMAGE_FOLDER}${shuffled[index]}" style="width:100vw;height:100vh;object-fit:cover;">`;
     index = (index + 1) % shuffled.length;
     setTimeout(showNext, DISPLAY_TIME);
   }

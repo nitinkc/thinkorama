@@ -2,11 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Image Screensaver</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Image Gallery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .gallery img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      transition: transform 0.2s;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+      border-color: #777;
+    }
+  </style>
 </head>
 <body>
-  <div id="slideshow"></div>
-  <script src="script.js"></script>
+  <h1>Image Gallery</h1>
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    fetch('images.json')
+      .then(response => response.json())
+      .then(images => {
+        const gallery = document.getElementById('gallery');
+        images.forEach(path => {
+          const fullPath = 'images/' + path;
+          const img = document.createElement('img');
+          img.src = fullPath;
+          img.alt = path;
+          const link = document.createElement('a');
+          link.href = fullPath;
+          link.target = '_blank';
+          link.appendChild(img);
+          gallery.appendChild(link);
+        });
+      });
+  </script>
 </body>
 </html>
