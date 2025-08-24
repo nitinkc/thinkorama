@@ -6,12 +6,24 @@ fetch('images.json')
     let currentPage = 1;
     const totalPages = Math.ceil(images.length / pageSize);
 
+    // Shuffle function
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
     function renderGallery(page) {
       gallery.innerHTML = '';
+      // Make a copy and shuffle for each page render
+      const shuffledImages = images.slice();
+      shuffleArray(shuffledImages);
+
       const start = (page - 1) * pageSize;
-      const end = Math.min(start + pageSize, images.length);
+      const end = Math.min(start + pageSize, shuffledImages.length);
       for (let i = start; i < end; i++) {
-        const path = images[i];
+        const path = shuffledImages[i];
         const fullPath = 'images/' + path;
         const col = document.createElement('div');
         col.className = 'col-12 col-sm-6 col-md-3 mb-4';
