@@ -147,6 +147,10 @@ const QuickView = {
           speed: 400
         });
       }
+    },
+    goToGallery(idx) {
+      this.$emit('goto', idx);
+      this.$emit('close');
     }
   },
   template: `
@@ -165,6 +169,7 @@ const QuickView = {
                   class="img-thumbnail"
                   style="cursor:pointer;max-width:100%;"
                   @click="openInGallery(idx)"
+                  @mouseenter="goToGallery(idx)" <!-- Add this line for hover -->
                   :alt="path"
                 >
               </div>
@@ -183,7 +188,8 @@ Vue.createApp({
     return {
       images: [],
       screensaver: false,
-      quickView: false
+      quickView: false,
+      galleryPage: 1 // <-- Add this
     };
   },
   mounted() {
@@ -194,6 +200,11 @@ Vue.createApp({
   methods: {
     startScreensaver() {
       this.screensaver = true;
+    },
+    goToGalleryIndex(idx) {
+      // Calculate the page number (1-based)
+      this.galleryPage = Math.floor(idx / 21) + 1; // 21 = PAGE_SIZE
+      this.quickView = false;
     }
   }
 }).mount('#app');

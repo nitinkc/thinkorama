@@ -12,9 +12,9 @@
     <h1 class="mb-4">Thinkorama</h1>
     <button class="btn btn-primary mb-4" v-if="!screensaver" @click="startScreensaver">Start Screensaver</button>
     <button class="btn btn-secondary mb-3" v-if="!screensaver" @click="quickView = true">Quick View All Thumbnails</button>
-    <gallery v-if="!screensaver" :images="images"></gallery>
+    <gallery v-if="!screensaver" :images="images" :page="galleryPage" @update:page="galleryPage = $event"></gallery>
     <screensaver v-if="screensaver" :images="images" @exit="screensaver = false"></screensaver>
-    <quick-view v-if="quickView" :images="images" @close="quickView = false"></quick-view>
+    <quick-view v-if="quickView" :images="images" @close="quickView = false" @goto="goToGalleryIndex"></quick-view>
   </div>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/lightgallery.umd.min.js"></script>

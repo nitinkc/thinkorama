@@ -1,6 +1,6 @@
 const QuickView = {
   props: ['images'],
-  emits: ['close'],
+  emits: ['close', 'goto'],
   methods: {
     openInGallery(idx) {
       if (window.lightGallery) {
@@ -17,6 +17,10 @@ const QuickView = {
           speed: 400
         });
       }
+    },
+    goToGallery(idx) {
+      this.$emit('goto', idx);
+      this.$emit('close');
     }
   },
   template: `
@@ -34,7 +38,7 @@ const QuickView = {
                   :src="'images/' + path"
                   class="img-thumbnail"
                   style="cursor:pointer;max-width:100%;"
-                  @click="openInGallery(idx)"
+                  @click="goToGallery(idx)"
                   :alt="path"
                 >
               </div>

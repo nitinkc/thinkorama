@@ -1,10 +1,14 @@
 const PAGE_SIZE = 21;
 
 const Gallery = {
-  props: ['images'],
-  data() {
-    return { page: 1 };
+  props: {
+    images: Array,
+    page: {
+      type: Number,
+      default: 1
+    }
   },
+  emits: ['update:page'],
   computed: {
     totalPages() {
       return Math.ceil(this.images.length / PAGE_SIZE);
@@ -18,9 +22,22 @@ const Gallery = {
       return Array.from({ length: this.totalPages }, (_, i) => i + 1);
     }
   },
-  mounted() { this.initLightGallery(); },
-  updated() { this.initLightGallery(); },
+  watch: {
+    page(newPage) {
+      // When parent changes page, update internal page
+      this.internalPage = newPage;
+    }
+  },
+  data() {
+    return {
+      internalPage: this.page
+    };
+  },
   methods: {
+    setPage(newPage) {
+      this.internalPage = newPage;
+      this.$emit('update:page', newPage);
+    },
     initLightGallery() {
       if (this._lgInstance && typeof this._lgInstance.destroy === 'function') {
         this._lgInstance.destroy();
@@ -37,6 +54,8 @@ const Gallery = {
       }
     }
   },
+  mounted() { this.initLightGallery(); },
+  updated() { this.initLightGallery(); },
   template: `
     <div>
       <div class="row" id="gallery">
@@ -54,14 +73,14 @@ const Gallery = {
       </div>
       <nav id="pagination" aria-label="Gallery page navigation">
         <ul class="pagination justify-content-center">
-          <li class="page-item" :class="{disabled: page === 1}">
-            <button class="page-link" @click="page > 1 && (page--)" :disabled="page === 1">Previous</button>
+          <li class="page-item" :class="{disabled: internalPage === 1}">
+            <button class="page-link" @click="internalPage > 1 && setPage(internalPage - 1)" :disabled="internalPage === 1">Previous</button>
           </li>
-          <li v-for="num in pageNumbers" :key="num" class="page-item" :class="{active: num === page}">
-            <button class="page-link" @click="page = num">{{ num }}</button>
+          <li v-for="num in pageNumbers" :key="num" class="page-item" :class="{active: num === internalPage}">
+            <button class="page-link" @click="setPage(num)">{{ num }}</button>
           </li>
-          <li class="page-item" :class="{disabled: page === totalPages}">
-            <button class="page-link" @click="page < totalPages && (page++)" :disabled="page === totalPages">Next</button>
+          <li class="page-item" :class="{disabled: internalPage === totalPages}">
+            <button class="page-link" @click="internalPage < totalPages && setPage(internalPage + 1)" :disabled="internalPage === totalPages">Next</button>
           </li>
         </ul>
       </nav>
