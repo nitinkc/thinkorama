@@ -4,18 +4,17 @@ const Gallery = {
   props: ['images'],
   data() {
     return {
-      page: 1,
-      shuffledImages: []
+      page: 1
     };
   },
   computed: {
     totalPages() {
-      return Math.ceil(this.shuffledImages.length / PAGE_SIZE);
+      return Math.ceil(this.images.length / PAGE_SIZE);
     },
     pageImages() {
       const start = (this.page - 1) * PAGE_SIZE;
-      const end = Math.min(start + PAGE_SIZE, this.shuffledImages.length);
-      return this.shuffledImages.slice(start, end);
+      const end = Math.min(start + PAGE_SIZE, this.images.length);
+      return this.images.slice(start, end);
     },
     pageNumbers() {
       let start = Math.max(1, this.page - 2);
@@ -25,20 +24,6 @@ const Gallery = {
       const nums = [];
       for (let i = start; i <= end; i++) nums.push(i);
       return nums;
-    }
-  },
-  watch: {
-    images: {
-      immediate: true,
-      handler(newImages) {
-        // Shuffle ONCE when images change
-        const arr = newImages.slice();
-        for (let i = arr.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        this.shuffledImages = arr;
-      }
     }
   },
   mounted() {
