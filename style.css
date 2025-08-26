@@ -1,4 +1,33 @@
 /* Base styles */
+/* LightGallery custom transitions */
+.lg-backdrop {
+  transition: opacity 0.2s ease !important;
+}
+
+.lg-outer .lg-item {
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease !important;
+}
+
+.lg-outer .lg-item.lg-current {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.lg-outer .lg-img-wrap {
+  transition: transform 0.25s ease;
+}
+
+/* Preload optimization */
+.gallery-item img {
+  transition: transform 0.2s ease;
+  will-change: transform;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.02);
+}
+
 body {
   background-color: #f8f9fa;
   margin: 0;

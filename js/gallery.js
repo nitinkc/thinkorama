@@ -48,7 +48,19 @@ window.gallery = {
           selector: '.gallery-item',
           plugins: [lgZoom, lgThumbnail],
           licenseKey: '0000-0000-000-0000',
-          speed: 400
+          speed: 250,
+          preload: 3,
+          backdropDuration: 200,
+          mode: 'lg-fade',
+          easing: 'ease',
+          download: false,
+          closeOnTap: true,
+          startAnimationDuration: 200,
+          enableSwipe: true,
+          thumbnail: true,
+          animateThumb: false,
+          zoomFromOrigin: false,  // This will make the transition smoother
+          addClass: 'lg-custom-transitions'
         });
       }
     }
@@ -66,7 +78,13 @@ window.gallery = {
           :data-lg-size="'1406-1390'"
         >
           <div class="card">
-            <img :src="'images/' + path" class="card-img-top" :alt="path">
+            <img 
+              :src="'images/' + path" 
+              class="card-img-top" 
+              :alt="path"
+              loading="lazy"
+              decoding="async"
+            >
           </div>
         </a>
       </div>
