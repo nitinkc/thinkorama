@@ -13,20 +13,21 @@
 </head>
 <body>
   <div id="app" class="app-container">
-    <header class="app-header">
-      <h1 class="app-title">Thinkorama</h1>
-      <div class="header-actions">
-        <button class="action-button screensaver-btn" v-if="!screensaver" @click="startScreensaver">
-          <span class="button-icon">▶</span>
-          <span class="button-text">Start Screensaver</span>
-        </button>
-        <button class="action-button quickview-btn" v-if="!screensaver" @click="quickView = true">
-          <span class="button-icon">⊞</span>
-          <span class="button-text">Quick View</span>
-        </button>
-      </div>
-    </header>
-    <main class="app-content">
+    <div class="content-wrapper">
+      <header class="app-header">
+        <h1 class="app-title">Thinkorama</h1>
+        <div class="header-actions">
+          <button class="action-button screensaver-btn" v-if="!screensaver" @click="startScreensaver">
+            <span class="button-icon">▶</span>
+            <span class="button-text">Start Screensaver</span>
+          </button>
+          <button class="action-button quickview-btn" v-if="!screensaver" @click="quickView = true">
+            <span class="button-icon">⊞</span>
+            <span class="button-text">Quick View</span>
+          </button>
+        </div>
+      </header>
+      <main class="app-content">
       <gallery v-if="!screensaver" :images="images" :page="galleryPage" @update:page="galleryPage = $event"></gallery>
       <screensaver v-if="screensaver" :images="images" @exit="screensaver = false"></screensaver>
       <quick-view v-if="quickView" :images="images" @close="quickView = false" @goto="goToGalleryIndex"></quick-view>

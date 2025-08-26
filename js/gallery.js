@@ -98,12 +98,12 @@ window.gallery = {
   updated() { this.initLightGallery(); },
   template: `
     <div class="gallery-container">
-      <div class="row g-2" id="gallery">
+      <div class="gallery-grid" id="gallery">
         <a
           v-for="(path, idx) in pageImages"
           :key="idx"
           :href="'images/' + path"
-          class="col-6 col-sm-4 col-md-3 gallery-item"
+          class="gallery-item"
           :data-src="'images/' + path"
           :data-responsive="'images/' + path"
           :data-sub-html="path"
