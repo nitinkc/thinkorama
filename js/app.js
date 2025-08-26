@@ -2,7 +2,11 @@
 const PAGE_SIZE = 12; // Number of images per page
 
 Vue.createApp({
-  components: { Gallery, Screensaver, QuickView },
+  components: { 
+    'gallery': gallery,
+    'screensaver': screensaver,
+    'quick-view': quickView
+  },
   data() {
     return {
       images: [],

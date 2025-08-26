@@ -1,4 +1,4 @@
-const Screensaver = {
+const screensaver = {
   props: ['images'],
   emits: ['exit'],
   data() {

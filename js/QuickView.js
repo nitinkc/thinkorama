@@ -1,4 +1,4 @@
-const QuickView = {
+const quickView = {
   props: ['images'],
   emits: ['close', 'goto'],
   methods: {
