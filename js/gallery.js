@@ -1,4 +1,4 @@
-const gallery = {
+window.gallery = {
   name: 'gallery',
   props: {
     images: Array,
