@@ -46,39 +46,37 @@ window.gallery = {
       if (galleryEl && window.lightGallery) {
         this._lgInstance = window.lightGallery(galleryEl, {
           selector: '.gallery-item',
-          plugins: [lgZoom, lgThumbnail],
+          plugins: [lgZoom],
           licenseKey: '0000-0000-000-0000',
           speed: 250,
           preload: 2,
           backdropDuration: 200,
-          mode: 'lg-fade',
+          mode: 'lg-slide',
           easing: 'ease',
           download: false,
           closeOnTap: true,
           startAnimationDuration: 200,
           enableSwipe: true,
-          thumbnail: true,
-          animateThumb: false,
+          enableDrag: true,
+          swipeToClose: true,
+          thumbnail: false,
           zoomFromOrigin: false,
-          addClass: 'lg-custom-transitions',
+          addClass: 'lg-mobile-optimized',
           allowMediaOverlap: true,
-          preloadHeight: 400,
+          preloadHeight: window.innerHeight,
           preloadAfterLoad: true,
           getCaptionFromTitleOrAlt: false,
-          defaultCaptionHeight: 0,
-          loadYouTubeThumbnail: false,
           loadOnlyVisible: true,
-          appendSubHtmlTo: '.lg-item',
           showAfterLoad: false,
-          resize: true,
-          exThumbImage: 'data-src',
-          thumbHeight: 80,
-          thumbWidth: 80,
-          thumbnails: true,
-          animateThumb: true,
-          toggleThumb: true,
-          toogleThumbIcon: true,
-          thumbMargin: 4
+          hideControlOnEnd: true,
+          hideBarsDelay: 3000,
+          controls: true,
+          mobileSettings: {
+            controls: true,
+            showCloseIcon: true,
+            download: false,
+            rotate: false
+          }
         });
       }
     }
@@ -97,7 +95,7 @@ window.gallery = {
           :data-responsive="'images/' + path"
           :data-sub-html="path"
         >
-          <div class="card">
+          <div class="card gallery-card">
             <img 
               :src="'images/' + path" 
               class="card-img-top" 
@@ -105,6 +103,9 @@ window.gallery = {
               loading="lazy"
               decoding="async"
             >
+            <div class="gallery-card-overlay">
+              <span class="gallery-card-icon">⊕</span>
+            </div>
           </div>
         </a>
       </div>
