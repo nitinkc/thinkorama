@@ -71,7 +71,14 @@ window.gallery = {
           appendSubHtmlTo: '.lg-item',
           showAfterLoad: false,
           resize: true,
-          exThumbImage: 'data-src'
+          exThumbImage: 'data-src',
+          thumbHeight: 80,
+          thumbWidth: 80,
+          thumbnails: true,
+          animateThumb: true,
+          toggleThumb: true,
+          toogleThumbIcon: true,
+          thumbMargin: 4
         });
       }
     }
