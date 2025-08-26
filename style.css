@@ -16,6 +16,32 @@
 
 .lg-outer .lg-img-wrap {
   transition: transform 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lg-outer .lg-img-wrap .lg-image {
+  max-height: 90vh;
+  max-width: 90vw;
+  object-fit: contain;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.lg-outer.lg-thumb-open .lg-img-wrap {
+  padding: 0;
+}
+
+/* Prevent initial flash */
+.lg-outer .lg-item:not(.lg-current) {
+  position: fixed;
+  visibility: hidden;
+}
+
+/* Smooth loading transition */
+.lg-outer.lg-css3.lg-zoom-dragging .lg-item.lg-complete.lg-zoomable .lg-img-wrap,
+.lg-outer.lg-css3.lg-zoom-dragging .lg-item.lg-complete.lg-zoomable .lg-image {
+  transition: none !important;
 }
 
 /* Preload optimization */

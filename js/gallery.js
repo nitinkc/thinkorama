@@ -49,7 +49,7 @@ window.gallery = {
           plugins: [lgZoom, lgThumbnail],
           licenseKey: '0000-0000-000-0000',
           speed: 250,
-          preload: 3,
+          preload: 2,
           backdropDuration: 200,
           mode: 'lg-fade',
           easing: 'ease',
@@ -59,8 +59,19 @@ window.gallery = {
           enableSwipe: true,
           thumbnail: true,
           animateThumb: false,
-          zoomFromOrigin: false,  // This will make the transition smoother
-          addClass: 'lg-custom-transitions'
+          zoomFromOrigin: false,
+          addClass: 'lg-custom-transitions',
+          allowMediaOverlap: true,
+          preloadHeight: 400,
+          preloadAfterLoad: true,
+          getCaptionFromTitleOrAlt: false,
+          defaultCaptionHeight: 0,
+          loadYouTubeThumbnail: false,
+          loadOnlyVisible: true,
+          appendSubHtmlTo: '.lg-item',
+          showAfterLoad: false,
+          resize: true,
+          exThumbImage: 'data-src'
         });
       }
     }
@@ -75,7 +86,9 @@ window.gallery = {
           :key="idx"
           :href="'images/' + path"
           class="col-12 col-sm-6 col-md-3 mb-4 gallery-item"
-          :data-lg-size="'1406-1390'"
+          :data-src="'images/' + path"
+          :data-responsive="'images/' + path"
+          :data-sub-html="path"
         >
           <div class="card">
             <img 
