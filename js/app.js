@@ -7,6 +7,11 @@ Vue.createApp({
     screensaver: window.screensaver,
     'quick-view': window.quickview
   },
+  computed: {
+    isMobile() {
+      return window.innerWidth <= 768;
+    }
+  },
   data() {
     return {
       images: [],

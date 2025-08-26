@@ -37,6 +37,19 @@ window.gallery = {
       this.internalPage = newPage;
       this.$emit('update:page', newPage);
     },
+    shouldShowPageNumber(num) {
+      // Always show first and last pages
+      if (num === 1 || num === this.totalPages) return true;
+      // Always show current page and one page before and after
+      if (Math.abs(this.internalPage - num) <= 1) return true;
+      return false;
+    },
+    shouldShowEllipsis(num) {
+      // Show ellipsis if there's a gap in sequence
+      if (num === 1 || num === this.totalPages) return false;
+      return !this.shouldShowPageNumber(num) && 
+             (this.shouldShowPageNumber(num - 1) || this.shouldShowPageNumber(num + 1));
+    },
     initLightGallery() {
       if (this._lgInstance && typeof this._lgInstance.destroy === 'function') {
         this._lgInstance.destroy();
@@ -84,13 +97,13 @@ window.gallery = {
   mounted() { this.initLightGallery(); },
   updated() { this.initLightGallery(); },
   template: `
-    <div>
-      <div class="row" id="gallery">
+    <div class="gallery-container">
+      <div class="row g-2" id="gallery">
         <a
           v-for="(path, idx) in pageImages"
           :key="idx"
           :href="'images/' + path"
-          class="col-12 col-sm-6 col-md-3 mb-4 gallery-item"
+          class="col-6 col-sm-4 col-md-3 gallery-item"
           :data-src="'images/' + path"
           :data-responsive="'images/' + path"
           :data-sub-html="path"
@@ -109,16 +122,25 @@ window.gallery = {
           </div>
         </a>
       </div>
-      <nav id="pagination" aria-label="Gallery page navigation">
-        <ul class="pagination justify-content-center">
+      <nav id="pagination" aria-label="Gallery page navigation" v-if="totalPages > 1">
+        <ul class="pagination">
           <li class="page-item" :class="{disabled: internalPage === 1}">
-            <button class="page-link" @click="internalPage > 1 && setPage(internalPage - 1)" :disabled="internalPage === 1">Previous</button>
+            <button class="page-link" @click="internalPage > 1 && setPage(internalPage - 1)" :disabled="internalPage === 1" aria-label="Previous page">
+              <span aria-hidden="true">←</span>
+            </button>
           </li>
-          <li v-for="num in pageNumbers" :key="num" class="page-item" :class="{active: num === internalPage}">
-            <button class="page-link" @click="setPage(num)">{{ num }}</button>
-          </li>
+          <template v-for="num in pageNumbers" :key="num">
+            <li v-if="shouldShowPageNumber(num)" class="page-item" :class="{active: num === internalPage}">
+              <button class="page-link" @click="setPage(num)">{{ num }}</button>
+            </li>
+            <li v-else-if="shouldShowEllipsis(num)" class="page-item disabled" key="ellipsis">
+              <span class="page-link">...</span>
+            </li>
+          </template>
           <li class="page-item" :class="{disabled: internalPage === totalPages}">
-            <button class="page-link" @click="internalPage < totalPages && setPage(internalPage + 1)" :disabled="internalPage === totalPages">Next</button>
+            <button class="page-link" @click="internalPage < totalPages && setPage(internalPage + 1)" :disabled="internalPage === totalPages" aria-label="Next page">
+              <span aria-hidden="true">→</span>
+            </button>
           </li>
         </ul>
       </nav>
