@@ -1,4 +1,6 @@
 // Make sure to load Gallery.js, Screensaver.js, and QuickView.js before this file in your HTML!
+const PAGE_SIZE = 12; // Number of images per page
+
 Vue.createApp({
   components: { Gallery, Screensaver, QuickView },
   data() {
