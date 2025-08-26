@@ -1,4 +1,4 @@
-const gallery = {
+const Gallery = {
   props: {
     images: Array,
     page: {
