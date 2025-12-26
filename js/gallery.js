@@ -135,11 +135,9 @@ window.gallery = {
               
               btn.addEventListener('click', function() {
                 const currentIndex = self._lgInstance.index;
-                const startPage = self.page;
-                const indexInPage = currentIndex;
-                const globalIndex = (startPage - 1) * PAGE_SIZE + indexInPage;
+                const imagePath = self.pageImages[currentIndex];
                 self._lgInstance.closeGallery();
-                self.$emit('start-screensaver', globalIndex);
+                self.$emit('start-screensaver', imagePath);
               });
             }
           }, 50);

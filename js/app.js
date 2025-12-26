@@ -74,14 +74,15 @@ Vue.createApp({
     startScreensaver() {
       this.screensaver = true;
     },
-    startScreensaverAt(index) {
-      // Start screensaver from specific image index
+    startScreensaverAt(imagePath) {
+      // Start screensaver from specific image path
       this.screensaver = true;
       // Use nextTick to ensure screensaver component is mounted
       this.$nextTick(() => {
-        // The screensaver component will handle starting from this index
-        if (this.$refs.screensaver && this.$refs.screensaver.startFrom) {
-          this.$refs.screensaver.startFrom(index);
+        // Find the index in allImages array
+        const imageIndex = this.allImages.indexOf(imagePath);
+        if (this.$refs.screensaver && this.$refs.screensaver.startFrom && imageIndex !== -1) {
+          this.$refs.screensaver.startFrom(imageIndex);
         }
       });
     },
