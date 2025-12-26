@@ -136,10 +136,8 @@ body {
   background-color: #f8f9fa;
   margin: 0;
   padding: 0;
-  min-height: 100%;
+  min-height: 100vh;
   width: 100%;
-  position: fixed;
-  overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -149,10 +147,12 @@ body {
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  height: auto;
   padding: calc(1rem + var(--safe-area-inset-top)) 1rem calc(2rem + var(--safe-area-inset-bottom));
   width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background-color: #f8f9fa;
 }
 
@@ -160,9 +160,14 @@ body {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
   flex-direction: column;
-  flex: 1;
+  min-height: 100%;
 }
 
 .app-header {
@@ -236,15 +241,24 @@ body {
 
 /* Pagination Styles */
 .pagination {
+  display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
   gap: 0.5rem;
   padding: 2rem 0;
-  margin: 1rem auto;
+  margin: 1rem auto 2rem;
+  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
   width: 100%;
   max-width: 600px;
+  position: relative;
+  z-index: 1;
 }
 
 .page-item {
@@ -310,18 +324,31 @@ body {
 }
 
 .app-content {
-  flex: 1;
   width: 100%;
   padding-bottom: 2rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 1 auto;
+  flex: 0 1 auto;
 }
 
 /* Gallery Grid Layout */
 .gallery-container {
   width: 100%;
   padding: 0 0.5rem;
+  display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
   flex-direction: column;
-  min-height: 100%;
 }
 
 .gallery-grid {
@@ -580,6 +607,8 @@ body {
 .search-container {
   margin-bottom: 1.5rem;
   width: 100%;
+  position: relative;
+  z-index: 10;
 }
 
 .search-bar {
