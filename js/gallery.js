@@ -5,6 +5,10 @@ window.gallery = {
     page: {
       type: Number,
       default: 1
+    },
+    highlightIndex: {
+      type: Number,
+      default: -1
     }
   },
   emits: ['update:page', 'start-screensaver'],
@@ -171,7 +175,7 @@ window.gallery = {
           :data-responsive="'images/' + path"
           :data-sub-html="path"
         >
-          <div class="card gallery-card">
+          <div class="card gallery-card" :class="{ 'highlight-card': idx === highlightIndex }">
             <img 
               :src="'images/' + path" 
               class="card-img-top" 

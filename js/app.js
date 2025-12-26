@@ -47,7 +47,8 @@ Vue.createApp({
       quickView: false,
       galleryPage: 1,
       searchQuery: '',
-      searchFolder: ''
+      searchFolder: '',
+      highlightImageIndex: -1
     };
   },
   mounted() {
@@ -89,8 +90,14 @@ Vue.createApp({
       const imagePath = this.filteredImages[idx];
       const actualIdx = this.allImages.indexOf(imagePath);
       this.galleryPage = Math.floor(actualIdx / PAGE_SIZE) + 1;
+      this.highlightImageIndex = actualIdx % PAGE_SIZE;
       this.clearSearch();
       this.quickView = false;
+      
+      // Clear highlight after animation
+      setTimeout(() => {
+        this.highlightImageIndex = -1;
+      }, 2000);
     },
     handleSearch({query, folder}) {
       this.searchQuery = query;
