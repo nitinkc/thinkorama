@@ -29,7 +29,9 @@ window.gallery = {
   },
   data() {
     return {
-      internalPage: this.page
+      internalPage: this.page,
+      _lgInstance: null,
+      _lgAfterOpenHandler: null
     };
   },
   methods: {
@@ -55,7 +57,13 @@ window.gallery = {
         this._lgInstance.destroy();
         this._lgInstance = null;
       }
+      
+      // Remove old event listener if it exists
       const galleryEl = this.$el.querySelector('#gallery');
+      if (this._lgAfterOpenHandler && galleryEl) {
+        galleryEl.removeEventListener('lgAfterOpen', this._lgAfterOpenHandler);
+      }
+      
       if (galleryEl && window.lightGallery) {
         const self = this;
         const plugins = [lgZoom];
@@ -98,43 +106,21 @@ window.gallery = {
             download: false,
             rotate: false
           },
-          appendSubHtmlTo: '.lg-item',
-          onAfterOpen: function() {
-            console.log('Gallery opened, adding screensaver button...');
-            // Add custom screensaver button with slight delay to ensure DOM is ready
-            setTimeout(function() {
-              const toolbar = document.querySelector('.lg-toolbar');
-              console.log('Toolbar found:', toolbar);
-              if (toolbar && !toolbar.querySelector('.lg-screensaver')) {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'lg-icon lg-screensaver';
-                btn.setAttribute('aria-label', 'Start Screensaver');
-                btn.title = 'Start Screensaver from here';
-                btn.innerHTML = '<span style="font-size: 20px;">▶</span>';
-                toolbar.appendChild(btn);
-                console.log('Screensaver button added!');
-                
-                btn.addEventListener('click', function() {
-                  const currentIndex = self._lgInstance.index;
-                  const startPage = self.page;
-                  const indexInPage = currentIndex;
-                  const globalIndex = (startPage - 1) * PAGE_SIZE + indexInPage;
-                  self._lgInstance.closeGallery();
-                  self.$emit('start-screensaver', globalIndex);
-                });
-              }
-            }, 100);
-          }
+          appendSubHtmlTo: '.lg-item'
         });
         
         // Add screensaver button by listening on gallery element
-        galleryEl.addEventListener('lgAfterOpen', function() {
-          console.log('Gallery opened, adding button...');
+        this._lgAfterOpenHandler = function() {
           setTimeout(function() {
             const toolbar = document.querySelector('.lg-toolbar');
-            console.log('Toolbar:', toolbar);
-            if (toolbar && !toolbar.querySelector('.lg-screensaver')) {
+            if (toolbar) {
+              // Remove old button if it exists
+              const oldBtn = toolbar.querySelector('.lg-screensaver');
+              if (oldBtn) {
+                oldBtn.remove();
+              }
+              
+              // Add new button
               const btn = document.createElement('button');
               btn.type = 'button';
               btn.className = 'lg-icon lg-screensaver';
@@ -142,7 +128,6 @@ window.gallery = {
               btn.title = 'Start Screensaver from here';
               btn.innerHTML = '▶';
               toolbar.appendChild(btn);
-              console.log('Button added!');
               
               btn.addEventListener('click', function() {
                 const currentIndex = self._lgInstance.index;
@@ -154,12 +139,26 @@ window.gallery = {
               });
             }
           }, 50);
-        });
+        };
+        
+        galleryEl.addEventListener('lgAfterOpen', this._lgAfterOpenHandler);
+      }
+    },
+    cleanupLightGallery() {
+      const galleryEl = this.$el?.querySelector('#gallery');
+      if (this._lgAfterOpenHandler && galleryEl) {
+        galleryEl.removeEventListener('lgAfterOpen', this._lgAfterOpenHandler);
+        this._lgAfterOpenHandler = null;
+      }
+      if (this._lgInstance && typeof this._lgInstance.destroy === 'function') {
+        this._lgInstance.destroy();
+        this._lgInstance = null;
       }
     }
   },
   mounted() { this.initLightGallery(); },
   updated() { this.initLightGallery(); },
+  beforeUnmount() { this.cleanupLightGallery(); },
   template: `
     <div class="gallery-container">
       <div class="gallery-grid" id="gallery">
