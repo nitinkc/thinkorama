@@ -7,7 +7,7 @@ window.gallery = {
       default: 1
     }
   },
-  emits: ['update:page'],
+  emits: ['update:page', 'start-screensaver'],
   computed: {
     totalPages() {
       return Math.ceil(this.images.length / PAGE_SIZE);
@@ -57,10 +57,18 @@ window.gallery = {
       }
       const galleryEl = this.$el.querySelector('#gallery');
       if (galleryEl && window.lightGallery) {
+        const self = this;
+        const plugins = [lgZoom];
+        // Add fullscreen plugin if available
+        if (typeof lgFullscreen !== 'undefined') {
+          plugins.push(lgFullscreen);
+        }
+        
         this._lgInstance = window.lightGallery(galleryEl, {
           selector: '.gallery-item',
-          plugins: [lgZoom],
+          plugins: plugins,
           licenseKey: '0000-0000-000-0000',
+          fullScreen: true,
           speed: 250,
           preload: 2,
           backdropDuration: 200,
@@ -89,7 +97,63 @@ window.gallery = {
             showCloseIcon: true,
             download: false,
             rotate: false
+          },
+          appendSubHtmlTo: '.lg-item',
+          onAfterOpen: function() {
+            console.log('Gallery opened, adding screensaver button...');
+            // Add custom screensaver button with slight delay to ensure DOM is ready
+            setTimeout(function() {
+              const toolbar = document.querySelector('.lg-toolbar');
+              console.log('Toolbar found:', toolbar);
+              if (toolbar && !toolbar.querySelector('.lg-screensaver')) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'lg-icon lg-screensaver';
+                btn.setAttribute('aria-label', 'Start Screensaver');
+                btn.title = 'Start Screensaver from here';
+                btn.innerHTML = '<span style="font-size: 20px;">▶</span>';
+                toolbar.appendChild(btn);
+                console.log('Screensaver button added!');
+                
+                btn.addEventListener('click', function() {
+                  const currentIndex = self._lgInstance.index;
+                  const startPage = self.page;
+                  const indexInPage = currentIndex;
+                  const globalIndex = (startPage - 1) * PAGE_SIZE + indexInPage;
+                  self._lgInstance.closeGallery();
+                  self.$emit('start-screensaver', globalIndex);
+                });
+              }
+            }, 100);
           }
+        });
+        
+        // Add screensaver button by listening on gallery element
+        galleryEl.addEventListener('lgAfterOpen', function() {
+          console.log('Gallery opened, adding button...');
+          setTimeout(function() {
+            const toolbar = document.querySelector('.lg-toolbar');
+            console.log('Toolbar:', toolbar);
+            if (toolbar && !toolbar.querySelector('.lg-screensaver')) {
+              const btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'lg-icon lg-screensaver';
+              btn.setAttribute('aria-label', 'Start Screensaver');
+              btn.title = 'Start Screensaver from here';
+              btn.innerHTML = '▶';
+              toolbar.appendChild(btn);
+              console.log('Button added!');
+              
+              btn.addEventListener('click', function() {
+                const currentIndex = self._lgInstance.index;
+                const startPage = self.page;
+                const indexInPage = currentIndex;
+                const globalIndex = (startPage - 1) * PAGE_SIZE + indexInPage;
+                self._lgInstance.closeGallery();
+                self.$emit('start-screensaver', globalIndex);
+              });
+            }
+          }, 50);
         });
       }
     }

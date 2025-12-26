@@ -66,6 +66,16 @@
   height: 40px;
 }
 
+/* Custom screensaver button in lightGallery toolbar */
+.lg-screensaver {
+  font-size: 18px !important;
+  cursor: pointer;
+}
+
+.lg-screensaver:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
 /* Swipe hint animation */
 @keyframes swipeHint {
   0%, 100% { transform: translateX(0); }

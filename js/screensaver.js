@@ -27,6 +27,14 @@ window.screensaver = {
     if (document.fullscreenElement) document.exitFullscreen();
   },
   methods: {
+    startFrom(imageIndex) {
+      // Find the image in shuffled array and jump to it
+      const imagePath = this.images[imageIndex];
+      const shuffledIndex = this.shuffled.indexOf(imagePath);
+      if (shuffledIndex !== -1) {
+        this.index = shuffledIndex;
+      }
+    },
     handleKey(e) {
       if (e.key === 'ArrowRight') this.index = (this.index + 1) % this.shuffled.length;
       if (e.key === 'ArrowLeft') this.index = (this.index - 1 + this.shuffled.length) % this.shuffled.length;
